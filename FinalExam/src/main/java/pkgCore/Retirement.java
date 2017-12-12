@@ -1,30 +1,43 @@
 package pkgCore;
 
+import org.apache.poi.ss.formula.functions.FinanceLib;
+
 public class Retirement {
 
 	private int iYearsToWork;
-	private double dAnnualReturnWorking;
+	private double dAnnualReturnWork;
 	private int iYearsRetired;
 	private double dAnnualReturnRetired;
 	private double dRequiredIncome;
 	private double dMonthlySSI;
 	
-	//TODO: Build the contructor, getters and setters for the attributes above.
-	
+	public Retirement(int iYearsToWork, double dAnnualReturnWorking, int iYearsRetired, double dAnnualReturnRetired,
+			double dRequiredIncome, double dMonthlySSI) {
+		super();
+		this.iYearsToWork = iYearsToWork;
+		this.dAnnualReturnWork = dAnnualReturnWorking;
+		this.iYearsRetired = iYearsRetired;
+		this.dAnnualReturnRetired = dAnnualReturnRetired;
+		this.dRequiredIncome = dRequiredIncome;
+		this.dMonthlySSI = dMonthlySSI;
+	}
 	public double AmountToSave()
 	{
-		//TODO: Determine the amount to save each month based on TotalAmountSaved, YearsToWork
-		//		and Annual return while working
-		
-		
-		return 0;
+		double dMonthsToWork = iYearsToWork * 12;
+		 dAnnualReturnWork = (dAnnualReturnWork / 100) / 12;
+		double pmt = FinanceLib.pmt(dAnnualReturnWork, dMonthsToWork, 0, this.TotalAmountSaved(), false);
+		pmt = Math.round(pmt * 100.0) / 100.0;
+		return pmt;
 	}
+
 	
 	public double TotalAmountSaved()
 	{
-		//	TODO: Determine amount to be saved based on Monthly SSI, Required Income, Annual return during retirement
-		//		and number of years retired.
-		//
-		return 0;
+		double dMonthsRetired = this.iYearsRetired * 12;
+		double rAnnaulReturnRetired =this.dAnnualReturnRetired / 12;
+		double dRequiredIncome = this.dRequiredIncome;
+		double dMonthlySSI = this.dMonthlySSI;
+        double pv = FinanceLib.pv(rAnnaulReturnRetired, dMonthsRetired, dRequiredIncome - dMonthlySSI, 0, false);
+        return pv;
 	}
 }
